@@ -155,3 +155,19 @@ print(descend_priority)
 #4.
 unique_priors = bugs.unique()
 print(unique_priors)
+
+#DATAFRAME BASICS
+#A dataframe is a 2d dimensional array unlike series
+new_data = {
+ 'name': ['Ally','Bob','Charles'],
+ #first column
+ 'age': [11,12,17],
+ #second column
+ 'city': ['NY','SF','LA']
+}
+newDf = pd.DataFrame(new_data)
+print(newDf)
+
+new_data = [{'name':'Ally','age':11, 'city':'NY'},
+            {'name':'Bob','age':12, 'city':'SF'}]
+print(pd.DataFrame(new_data))
