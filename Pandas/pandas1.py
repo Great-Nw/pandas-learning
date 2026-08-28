@@ -197,27 +197,62 @@ import pandas as pd
 # newDf.loc[3] = {'name':'David','age':20,'city':'LA','gender':'M'}
 # print(newDf)
 
-#PROGRAM EXERCISE 3
-#Analyze popular python packages to understand what makes them succesful!
-#We must:
-#1.Examine the dataframe structure
-#2.Sort project by popularity
-#3.Find Projects with large communities
-#4.Calculate stars per contribution ratio
-libraries = {
-    'name': ['numpy', 'pandas', 'requests', 'flask', 'django'],
-    'stars': [22000, 35000, 48000, 58000, 65000],
-    'contributors': [1200, 2800, 950, 3500, 2300],
-    'language': ['Python', 'Python', 'Python', 'Python', 'Python'],
-    'first_release': ['2006', '2009', '2011', '2010', '2005']
-}
-#1.
-libDf = pd.DataFrame(libraries)
-print(libDf.info())
-#2.
-print(libDf.sort_values(ascending=False,by='stars'))
-#3.
-print(libDf.loc[libDf['contributors'] > 2000])
-#4.
-libDf['stars_per_contributor'] = libDf['stars'] / libDf['contributors']
-print(libDf)
+# #PROGRAM EXERCISE 3
+# #Analyze popular python packages to understand what makes them succesful!
+# #We must:
+# #1.Examine the dataframe structure
+# #2.Sort project by popularity
+# #3.Find Projects with large communities
+# #4.Calculate stars per contribution ratio
+# libraries = {
+#     'name': ['numpy', 'pandas', 'requests', 'flask', 'django'],
+#     'stars': [22000, 35000, 48000, 58000, 65000],
+#     'contributors': [1200, 2800, 950, 3500, 2300],
+#     'language': ['Python', 'Python', 'Python', 'Python', 'Python'],
+#     'first_release': ['2006', '2009', '2011', '2010', '2005']
+# }
+# #1.
+# libDf = pd.DataFrame(libraries)
+# print(libDf.info())
+# #2.
+# print(libDf.sort_values(ascending=False,by='stars'))
+# #3.
+# print(libDf.loc[libDf['contributors'] > 2000])
+# #4.
+# libDf['stars_per_contributor'] = libDf['stars'] / libDf['contributors']
+# print(libDf)
+
+#DATAFRAME OPERATIONS
+#Filtering dataframes
+#Dataframe filtering helps you to find all entries in the dataframe meeting all certain criteria
+workers = pd.DataFrame({
+    'name':['Alice','Kevin','Chris'],
+    'jobs':['SE','MLE','CE'],
+    'years_joined':[2016,2022,2025],
+    'income':[2e5,1.2e5,1e5]
+})
+#Getting recent workers
+recent = f"New workers are :{workers[workers['years_joined'] > 2024]}"
+print(recent)
+#we can use it more specifically
+print(workers[workers['name'] == 'Alice']) and (workers[workers['years_joined'] == 2016])
+#Sorting Dataframes using .sort_values()
+byYears = workers.sort_values(by='years_joined',ascending=False)
+print(byYears)
+#sort by multiple values
+byYearsandIncome = workers.sort_values(by=['years_joined','income'],ascending=[False,False])
+print(byYearsandIncome)
+#Handling missing data
+import numpy as np
+
+exFrame = pd.DataFrame({
+    'username': ['pythonista', 'js_lover', 'rust_fan'],
+    'last_login': ['2024-01-01', None, '2024-01-03'],
+    'points': [100, np.nan, 150]
+})
+
+# Find where the gaps are
+print(exFrame.isna().sum())
+#We can clean it up
+cleaned_exFrame = exFrame.dropna()
+print(cleaned_exFrame)
