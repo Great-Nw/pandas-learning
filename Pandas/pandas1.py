@@ -253,6 +253,20 @@ exFrame = pd.DataFrame({
 
 # Find where the gaps are
 print(exFrame.isna().sum())
-#We can clean it up
+#We can clean it up or we can fill it ourselves using .fillna()
 cleaned_exFrame = exFrame.dropna()
 print(cleaned_exFrame)
+filled_exFrame = exFrame.fillna(0)
+print(filled_exFrame)
+#.apply() is used to use functions on rows in the dataframe
+filled_exFrame['username'] = filled_exFrame['username'].apply(str.upper)
+print(filled_exFrame)
+#We can apply functiosn we make
+def rank(points):
+    if points >= 150:
+        return 'Expert'
+    elif points >= 100:
+        return 'Intermediate'
+    return 'Beginner'
+filled_exFrame['rank'] = filled_exFrame['points'].apply(rank)
+print(filled_exFrame)
