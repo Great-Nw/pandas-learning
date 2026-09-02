@@ -225,48 +225,91 @@ import pandas as pd
 #DATAFRAME OPERATIONS
 #Filtering dataframes
 #Dataframe filtering helps you to find all entries in the dataframe meeting all certain criteria
-workers = pd.DataFrame({
-    'name':['Alice','Kevin','Chris'],
-    'jobs':['SE','MLE','CE'],
-    'years_joined':[2016,2022,2025],
-    'income':[2e5,1.2e5,1e5]
-})
+# workers = pd.DataFrame({
+#     'name':['Alice','Kevin','Chris'],
+#     'jobs':['SE','MLE','CE'],
+#     'years_joined':[2016,2022,2025],
+#     'income':[2e5,1.2e5,1e5]
+# })
 #Getting recent workers
-recent = f"New workers are :{workers[workers['years_joined'] > 2024]}"
-print(recent)
-#we can use it more specifically
-print(workers[workers['name'] == 'Alice']) and (workers[workers['years_joined'] == 2016])
-#Sorting Dataframes using .sort_values()
-byYears = workers.sort_values(by='years_joined',ascending=False)
-print(byYears)
-#sort by multiple values
-byYearsandIncome = workers.sort_values(by=['years_joined','income'],ascending=[False,False])
-print(byYearsandIncome)
-#Handling missing data
+# recent = f"New workers are :{workers[workers['years_joined'] > 2024]}"
+# print(recent)
+# #we can use it more specifically
+# print(workers[workers['name'] == 'Alice']) and (workers[workers['years_joined'] == 2016])
+# #Sorting Dataframes using .sort_values()
+# byYears = workers.sort_values(by='years_joined',ascending=False)
+# print(byYears)
+# #sort by multiple values
+# byYearsandIncome = workers.sort_values(by=['years_joined','income'],ascending=[False,False])
+# print(byYearsandIncome)
+# #Handling missing data
 import numpy as np
 
-exFrame = pd.DataFrame({
-    'username': ['pythonista', 'js_lover', 'rust_fan'],
-    'last_login': ['2024-01-01', None, '2024-01-03'],
-    'points': [100, np.nan, 150]
-})
+# exFrame = pd.DataFrame({
+#     'username': ['pythonista', 'js_lover', 'rust_fan'],
+#     'last_login': ['2024-01-01', None, '2024-01-03'],
+#     'points': [100, np.nan, 150]
+# })
 
-# Find where the gaps are
-print(exFrame.isna().sum())
-#We can clean it up or we can fill it ourselves using .fillna()
-cleaned_exFrame = exFrame.dropna()
-print(cleaned_exFrame)
-filled_exFrame = exFrame.fillna(0)
-print(filled_exFrame)
-#.apply() is used to use functions on rows in the dataframe
-filled_exFrame['username'] = filled_exFrame['username'].apply(str.upper)
-print(filled_exFrame)
-#We can apply functiosn we make
-def rank(points):
-    if points >= 150:
-        return 'Expert'
-    elif points >= 100:
-        return 'Intermediate'
-    return 'Beginner'
-filled_exFrame['rank'] = filled_exFrame['points'].apply(rank)
-print(filled_exFrame)
+# # Find where the gaps are
+# print(exFrame.isna().sum())
+# #We can clean it up or we can fill it ourselves using .fillna()
+# cleaned_exFrame = exFrame.dropna()
+# print(cleaned_exFrame)
+# filled_exFrame = exFrame.fillna(0)
+# print(filled_exFrame)
+# #.apply() is used to use functions on rows in the dataframe
+# filled_exFrame['username'] = filled_exFrame['username'].apply(str.upper)
+# print(filled_exFrame)
+# #We can apply functiosn we make
+# def rank(points):
+#     if points >= 150:
+#         return 'Expert'
+#     elif points >= 100:
+#         return 'Intermediate'
+#     return 'Beginner'
+# filled_exFrame['rank'] = filled_exFrame['points'].apply(rank)
+# print(filled_exFrame)
+#Apply works on both Series and Dataframes
+#===PROBLEM EXERCISE 5===
+# Welcome to code review analytics!
+
+# Code review data
+data2 = {
+    'pr_id': range(1, 11),
+    'author': ['alice', 'bob', 'alice', 'charlie', 'bob',
+              'david', 'charlie', 'alice', 'bob', 'david'],
+    'files_changed': [5, 10, 3, 8, 4, 
+                     7, 6, 9, 2, 5],
+    'additions': [100, 200, 50, 300, 75,
+                 150, 250, 180, 40, 90],
+    'deletions': [80, 150, 30, 200, 50,
+                 100, 200, 120, 20, 60],
+    'review_time': [2.5, 4.0, 1.0, 3.5, 2.0,
+                   2.8, 3.2, 3.8, 1.5, 2.2],
+    'status': ['merged', 'merged', 'merged', 'rejected', 'merged',
+              'pending', 'merged', 'rejected', 'merged', 'pending']
+}
+
+df = pd.DataFrame(data2)
+
+# 1. Calculate net changes (additions - deletions) per PR
+df['net_changes'] = df['additions'] - df['deletions']
+print(df)
+
+# 2. Find PRs with high impact (files > 5 or net_changes > 100)
+high_impact =  df[(df['files_changed'] > 5) | (df['net_changes'] > 100)]
+print(high_impact)
+
+# 3. Get average review time per author
+review_times = df.groupby('author').agg({'review_time': 'mean'})
+print(review_times)
+
+# 4. Create a status summary (count of merged/rejected/pending per author)
+status_summary = df.pivot_table(
+    index='author',
+    columns='status',
+    aggfunc='size',
+    fill_value=0
+)
+print(status_summary)
